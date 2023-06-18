@@ -1,4 +1,4 @@
-package com.example.tddstudy;
+package com.example.tddstudy.learning;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -8,10 +8,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
-public class LearningTest {
+public class MockitoLearningTest {
 
     @Test
     public void whenThenReturnTest(){
@@ -28,7 +27,7 @@ public class LearningTest {
     public void anyTest(){
         List<String> mocks = mock(ArrayList.class);
 
-        String givenValue = mocks.get(anyInt());
+        String givenValue = mocks.get(any(Integer.class));
 
         when(givenValue).thenReturn("ksb");
 

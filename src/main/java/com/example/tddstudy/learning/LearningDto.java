@@ -1,12 +1,18 @@
 package com.example.tddstudy.learning;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Getter;
 
-@Setter
+
 @Builder
-public class LearningResponseDto {
+@Getter
+public class LearningDto {
     long id;
     String name;
+
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(LearningDto.builder().id(id).name(name).build());
+    }
 }
