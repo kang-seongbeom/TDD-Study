@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,8 +23,8 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("회원 정보 DB 저장")
-    public void saveUserInDB(){
+    @DisplayName("회원 가입")
+    public void saveUser(){
         String name = "ksb";
         String password = "1234";
 
@@ -41,7 +43,7 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("회원 정보 이름으로 검색")
-    public void findByNameUserInDB(){
+    public void findByNameUser(){
         String name = "ksb";
         String password = "1234";
 
@@ -54,9 +56,9 @@ public class UserRepositoryTest {
 
         User saveUser = userRepository.save(user);
 
-        given(userRepository.findByName(name)).willReturn(saveUser);
+        given(userRepository.findByName(name)).willReturn(Optional.of(saveUser));
 
-        User findByNameUser = userRepository.findByName("ksb");
+        User findByNameUser = userRepository.findByName("ksb").get();
 
         assertEquals(user.getName(), findByNameUser.getName());
         assertEquals(user.getPassword(), findByNameUser.getPassword());
@@ -81,9 +83,9 @@ public class UserRepositoryTest {
         given(userRepository.save(user)).willReturn(user);
         User saveUser = userRepository.save(user);
 
-        given(userRepository.findByName(saveUser.getName())).willReturn(user);
+        given(userRepository.findByName(saveUser.getName())).willReturn(Optional.of(user));
 
-        User signInInfo = userRepository.findByName(name);
+        User signInInfo = userRepository.findByName(name).get();
 
         assertEquals(signInUser.getName(), signInInfo.getName());
         assertEquals(signInUser.getPassword(), signInInfo.getPassword());
@@ -113,11 +115,11 @@ public class UserRepositoryTest {
         saveUpdateUser.setName(updateName); // JPA dirty checking
 
         // 수정된 정보를 바탕으로 검색
-        given(userRepository.findByName(saveUser.getName())).willReturn(saveUser);
-        given(userRepository.findByName(saveUpdateUser.getName())).willReturn(saveUpdateUser);
+        given(userRepository.findByName(saveUser.getName())).willReturn(Optional.of(saveUser));
+        given(userRepository.findByName(saveUpdateUser.getName())).willReturn(Optional.of(saveUpdateUser));
 
-        User searchUser = userRepository.findByName(saveUser.getName());
-        User searchUpdateUser = userRepository.findByName(saveUpdateUser.getName());
+        User searchUser = userRepository.findByName(saveUser.getName()).get();
+        User searchUpdateUser = userRepository.findByName(saveUpdateUser.getName()).get();
 
         assertEquals(name, searchUser.getName());
         assertEquals(password, searchUser.getPassword());
