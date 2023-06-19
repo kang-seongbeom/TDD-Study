@@ -10,8 +10,9 @@ import javax.persistence.Id;
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
 
     @Id
@@ -21,4 +22,11 @@ public class User {
     private String name;
 
     private String password;
+
+    public User copyOf(){
+        return User.builder()
+                .name(this.name)
+                .password(this.password)
+                .build();
+    }
 }
