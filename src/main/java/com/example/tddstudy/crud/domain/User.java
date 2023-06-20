@@ -1,11 +1,14 @@
 package com.example.tddstudy.crud.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
 @Builder
@@ -28,5 +31,9 @@ public class User {
                 .name(this.name)
                 .password(this.password)
                 .build();
+    }
+
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(User.builder().name(name).password(password).build());
     }
 }
