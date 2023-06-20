@@ -113,6 +113,7 @@ public class UserRepositoryTest {
 
         // 정보 수정
         saveUpdateUser.setName(updateName); // JPA dirty checking
+        userRepository.save(saveUpdateUser);
 
         // 수정된 정보를 바탕으로 검색
         given(userRepository.findByName(saveUser.getName())).willReturn(Optional.of(saveUser));
