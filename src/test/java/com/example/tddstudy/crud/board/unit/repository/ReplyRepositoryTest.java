@@ -1,4 +1,4 @@
-package com.example.tddstudy.crud.board.unit;
+package com.example.tddstudy.crud.board.unit.repository;
 
 import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
