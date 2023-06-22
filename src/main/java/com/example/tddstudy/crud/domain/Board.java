@@ -1,6 +1,8 @@
 package com.example.tddstudy.crud.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,5 +43,9 @@ public class Board {
                 .title(title)
                 .content(content)
                 .build();
+    }
+
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(Board.builder().user(user).title(title).content(content).build());
     }
 }

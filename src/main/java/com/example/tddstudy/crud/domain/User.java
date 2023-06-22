@@ -34,6 +34,6 @@ public class User {
     }
 
     public String toJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(User.builder().name(name).password(password).build());
+        return new ObjectMapper().writeValueAsString(User.builder().id(id).name(name).password(password).build());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.tddstudy.crud.service;
 
 import com.example.tddstudy.crud.domain.Board;
+import com.example.tddstudy.crud.domain.User;
 import com.example.tddstudy.crud.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,28 +16,36 @@ public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
 
-    public Board save(Board board) {
+    public Board save(User user, Board board) {
+        board.setUser(user);
         return boardRepository.save(board);
     }
 
-    public Optional<Board> findByTitle(String title) {
-        return boardRepository.findByTitle(title);
+    public Board findByTitle(String title) {
+        return boardRepository.findByTitle(title).orElseThrow();
     }
 
-    public Board updateTitle(Long id, String updateTitle) {
-        Board board = boardRepository.findById(id).orElseThrow();
-        board.setTitle(updateTitle);
+    public Board updateTitle(User user, Board board, String updateTitle) {
+        Board findBoard = boardRepository.findById(board.getId()).orElseThrow();
+        if(findBoard.getUser().getId().equals(user.getId())) {
+            findBoard.setTitle(updateTitle);
+        }
         return board;
     }
 
-    public Board updateContent(Long id, String updateContent) {
-        Board board = boardRepository.findById(id).orElseThrow();
-        board.setContent(updateContent);
+    public Board updateContent(User user, Board board, String updateContent) {
+        Board findBoard = boardRepository.findById(board.getId()).orElseThrow();
+        if(findBoard.getUser().getId().equals(user.getId())) {
+            findBoard.setTitle(updateContent);
+        }
         return board;
     }
 
-    public boolean delete(Long id) {
-        boardRepository.deleteById(id);
+    public boolean delete(User user, Board board) {
+        Board findBoard = boardRepository.findById(board.getId()).orElseThrow();
+        if(findBoard.getUser().getId().equals(user.getId())) {
+            boardRepository.deleteById(board.getId());
+        }
         return true;
     }
 }

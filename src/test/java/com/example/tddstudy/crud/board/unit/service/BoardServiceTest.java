@@ -1,6 +1,7 @@
 package com.example.tddstudy.crud.board.unit.service;
 
 import com.example.tddstudy.crud.domain.Board;
+import com.example.tddstudy.crud.domain.User;
 import com.example.tddstudy.crud.repository.BoardRepository;
 import com.example.tddstudy.crud.service.BoardService;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,12 @@ public class BoardServiceTest {
         String title = "ksb board";
         String content = "ksb content";
 
+        User user = User.builder()
+                .id(1L)
+                .name("ksb")
+                .password("1234")
+                .build();
+
         Board board = Board.builder()
                 .title(title)
                 .content(content)
@@ -39,7 +46,8 @@ public class BoardServiceTest {
         board.setId(id); // id는 db 저장시 자동으로 생성
         given(boardRepository.save(board)).willReturn(board);
 
-        Board saveBoard = boardService.save(board);
+        Board saveBoard = boardService.save(user, board);
+        assertEquals(saveBoard.getUser(), user);
         assertEquals(saveBoard.getId(), board.getId());
         assertEquals(saveBoard.getTitle(), board.getTitle());
         assertEquals(saveBoard.getContent(), board.getContent());
@@ -60,7 +68,7 @@ public class BoardServiceTest {
         board.setId(id);
         given(boardRepository.findByTitle(title)).willReturn(Optional.of(board));
 
-        Board findBoard = boardService.findByTitle(title).get();
+        Board findBoard = boardService.findByTitle(title);
         assertEquals(findBoard.getId(), board.getId());
         assertEquals(findBoard.getTitle(), board.getTitle());
         assertEquals(findBoard.getContent(), board.getContent());
@@ -74,7 +82,14 @@ public class BoardServiceTest {
         String content = "ksb content";
         String updateTitle = "kkk board";
 
+        User user = User.builder()
+                .id(1L)
+                .name("ksb")
+                .password("1234")
+                .build();
+
         Board board = Board.builder()
+                .user(user)
                 .title(title)
                 .content(content)
                 .build();
@@ -82,7 +97,7 @@ public class BoardServiceTest {
         board.setId(id);
         given(boardRepository.findById(id)).willReturn(Optional.of(board));
 
-        Board updateBoard = boardService.updateTitle(id, updateTitle);
+        Board updateBoard = boardService.updateTitle(user, board, updateTitle);
 
         board.setTitle(updateTitle);
 
@@ -99,15 +114,22 @@ public class BoardServiceTest {
         String content = "ksb content";
         String updateContent = "kkk board";
 
+        User user = User.builder()
+                .id(1L)
+                .name("ksb")
+                .password("1234")
+                .build();
+
         Board board = Board.builder()
                 .title(title)
+                .user(user)
                 .content(content)
                 .build();
 
         board.setId(id);
         given(boardRepository.findById(id)).willReturn(Optional.of(board));
 
-        Board updateBoard = boardService.updateContent(id, updateContent);
+        Board updateBoard = boardService.updateContent(user, board, updateContent);
 
         board.setContent(updateContent);
 
@@ -123,14 +145,22 @@ public class BoardServiceTest {
         String title = "ksb board";
         String content = "ksb content";
 
+        User user = User.builder()
+                .id(1L)
+                .name("ksb")
+                .password("1234")
+                .build();
+
         Board board = Board.builder()
+                .user(user)
                 .title(title)
                 .content(content)
                 .build();
 
         board.setId(id);
 
-        boolean isDelete = boardService.delete(id);
+        given(boardRepository.findById(board.getId())).willReturn(Optional.of(board));
+        boolean isDelete = boardService.delete(user, board);
         assertTrue(isDelete);
     }
 
