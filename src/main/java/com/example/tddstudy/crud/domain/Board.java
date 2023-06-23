@@ -40,8 +40,10 @@ public class Board {
     public Board copyOf(){
         return Board.builder()
                 .id(id)
+                .user(user)
                 .title(title)
                 .content(content)
+                .replies(replies)
                 .build();
     }
 

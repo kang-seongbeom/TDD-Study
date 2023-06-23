@@ -1,13 +1,12 @@
 package com.example.tddstudy.crud.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateRequest {
+public class UserRequest {
     @JsonAlias("name")
     private String name;
 

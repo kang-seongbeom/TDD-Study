@@ -51,7 +51,7 @@ public class ReplyServiceTest {
                 .build();
 
         given(boardRepository.findById(board.getId())).willReturn(Optional.of(board));
-        Reply result = replyservice.save(replyUser, board.getId(), reply);
+        Reply result = replyservice.save(replyUser, board, reply);
 
         assertEquals(result.getBoard().getId(), board.getId());
         assertEquals(result.getUser().getId(), replyUser.getId());
@@ -88,7 +88,7 @@ public class ReplyServiceTest {
         board.setReplies(replies);
 
         given(replyRepository.findByUserId(replyUser.getId())).willReturn(replies);
-        List<Reply> userReplies = replyservice.findByUserId(replyUser.getId());
+        List<Reply> userReplies = replyservice.findByUserId(replyUser);
 
         for (int i = 0; i < userReplies.size(); i++) {
             assertEquals(userReplies.get(i).getId(), replies.get(i).getId());
@@ -122,7 +122,7 @@ public class ReplyServiceTest {
         board.setReplies(replies);
 
         given(replyRepository.findById(reply.getId())).willReturn(Optional.of(reply));
-        boolean isUpdated = replyservice.updateReplyContent(replyUser, reply.getId(), updateContent);
+        boolean isUpdated = replyservice.updateReplyContent(replyUser, reply, updateContent);
 
         assertTrue(isUpdated);
         assertEquals(reply.getContent(), updateContent);
@@ -153,7 +153,7 @@ public class ReplyServiceTest {
         board.setReplies(replies);
 
         given(boardRepository.findById(board.getId())).willReturn(Optional.of(board));
-        replyservice.delete(replyUser, board.getId(), reply);
+        replyservice.delete(replyUser, board, reply);
 
         assertEquals(0, board.getReplies().size());
     }

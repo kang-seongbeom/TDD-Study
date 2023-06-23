@@ -1,6 +1,6 @@
 package com.example.tddstudy.crud.controller;
 
-import com.example.tddstudy.crud.controller.dto.UpdateRequest;
+import com.example.tddstudy.crud.controller.dto.UserRequest;
 import com.example.tddstudy.crud.domain.User;
 import com.example.tddstudy.crud.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +39,9 @@ public class UserController {
 
     @PutMapping("/updatename")
     private ResponseEntity<User> updateName(@RequestParam Map<String, String> params){
-        UpdateRequest updateRequest = new ObjectMapper().convertValue(params, UpdateRequest.class);
-        User user = User.builder().name(updateRequest.getName()).password(updateRequest.getPassword()).build();
-        User update = userService.updateUser(user, updateRequest.getUpdateName());
+        UserRequest userRequest = new ObjectMapper().convertValue(params, UserRequest.class);
+        User user = User.builder().name(userRequest.getName()).password(userRequest.getPassword()).build();
+        User update = userService.updateUser(user, userRequest.getUpdateName());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(update);
     }
 

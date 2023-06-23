@@ -1,6 +1,8 @@
 package com.example.tddstudy.crud.domain;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,4 +30,17 @@ public class Reply {
 
     @Column
     private String content;
+
+    public Reply copyOf(){
+        return Reply.builder()
+                .id(id)
+                .user(user)
+                .board(board)
+                .content(content)
+                .build();
+    }
+
+    public String toJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(Reply.builder().id(id).user(user).board(board).content(content).build());
+    }
 }

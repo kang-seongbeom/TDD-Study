@@ -23,8 +23,8 @@ public class ReplyService {
     @Autowired
     private ReplyRepository replyRepository;
 
-    public Reply save(User replyUser, Long boardId, Reply reply) {
-        Board board = boardRepository.findById(boardId).orElseThrow();
+    public Reply save(User replyUser, Board boardId, Reply reply) {
+        Board board = boardRepository.findById(boardId.getId()).orElseThrow();
 
         if(board.getReplies() == null){
             board.setReplies(new ArrayList<>());
@@ -36,21 +36,21 @@ public class ReplyService {
         return reply;
     }
 
-    public List<Reply> findByUserId(Long replyUserId) {
-        return replyRepository.findByUserId(replyUserId);
+    public List<Reply> findByUserId(User replyUser) {
+        return replyRepository.findByUserId(replyUser.getId());
     }
 
-    public boolean updateReplyContent(User replyUser, Long replyId, String updateContent) {
-        Reply reply = replyRepository.findById(replyId).orElseThrow();
-        if(reply.getUser().getId().equals(replyUser.getId())) {
-            reply.setContent(updateContent);
+    public boolean updateReplyContent(User replyUser, Reply reply, String updateContent) {
+        Reply savedReply = replyRepository.findById(reply.getId()).orElseThrow();
+        if(savedReply.getUser().getId().equals(replyUser.getId())) {
+            savedReply.setContent(updateContent);
             return true;
         }
         return false;
     }
 
-    public boolean delete(User replyUser, Long boardId, Reply reply) {
-        Board board = boardRepository.findById(boardId).orElseThrow();
+    public boolean delete(User replyUser, Board board, Reply reply) {
+        Board savedBoard = boardRepository.findById(board.getId()).orElseThrow();
 
         if(board.getReplies() != null){
             int i;
