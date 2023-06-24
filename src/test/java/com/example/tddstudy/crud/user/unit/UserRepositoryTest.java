@@ -6,35 +6,46 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 
-@ExtendWith(MockitoExtension.class) // mock 애노테이션 사용시, mockito 테스트 실행 확장을 위해 필요
+@DataJpaTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(locations = "classpath:application.yml")
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class UserRepositoryTest {
 
     @Mock
     private UserRepository userRepository;
 
+    @Autowired
+    private TestEntityManager testEntityManager;
+
     @Test
     @DisplayName("회원 가입")
     public void saveUser(){
+        Long id = 1L;
         String name = "ksb";
         String password = "1234";
 
         User user = User.builder()
+                .id(id)
                 .name(name)
                 .password(password)
                 .build();
 
-        given(userRepository.save(any())).willReturn(user);
-
+        testEntityManager.persist(user);
         User savedUser = userRepository.save(user);
 
         assertEquals(user.getName(), savedUser.getName());
