@@ -2,7 +2,7 @@ package com.example.tddstudy.crud.service;
 
 import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.repository.BoardRepository;
 import com.example.tddstudy.crud.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class ReplyService {
     @Autowired
     private ReplyRepository replyRepository;
 
-    public Reply save(User replyUser, Board boardId, Reply reply) {
+    public Reply save(Member replyMember, Board boardId, Reply reply) {
         Board board = boardRepository.findById(boardId.getId()).orElseThrow();
 
         if(board.getReplies() == null){
@@ -32,30 +32,30 @@ public class ReplyService {
 
         board.getReplies().add(reply);
         reply.setBoard(board);
-        reply.setUser(replyUser);
+        reply.setMember(replyMember);
         return reply;
     }
 
-    public List<Reply> findByUserId(User replyUser) {
-        return replyRepository.findByUserId(replyUser.getId());
+    public List<Reply> findByUserId(Member replyMember) {
+        return replyRepository.findByMemberId(replyMember.getId());
     }
 
-    public boolean updateReplyContent(User replyUser, Reply reply, String updateContent) {
+    public boolean updateReplyContent(Member replyMember, Reply reply, String updateContent) {
         Reply savedReply = replyRepository.findById(reply.getId()).orElseThrow();
-        if(savedReply.getUser().getId().equals(replyUser.getId())) {
+        if(savedReply.getMember().getId().equals(replyMember.getId())) {
             savedReply.setContent(updateContent);
             return true;
         }
         return false;
     }
 
-    public boolean delete(User replyUser, Board board, Reply reply) {
+    public boolean delete(Member replyMember, Board board, Reply reply) {
         Board savedBoard = boardRepository.findById(board.getId()).orElseThrow();
 
         if(board.getReplies() != null){
             int i;
             for (i = 0; i < board.getReplies().size(); i++) {
-                if(replyUser.getId().equals(reply.getUser().getId()) && // 댓글 작성자 본인이면서
+                if(replyMember.getId().equals(reply.getMember().getId()) && // 댓글 작성자 본인이면서
                         board.getReplies().get(i).getId().equals(reply.getId())){ // 삭제할 댓글을 찾았다면
                     board.getReplies().remove(i);
                     replyRepository.delete(reply);

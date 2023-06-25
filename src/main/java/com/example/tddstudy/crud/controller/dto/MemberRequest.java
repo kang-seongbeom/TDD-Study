@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRequest {
+public class MemberRequest {
     @JsonAlias("name")
     private String name;
 

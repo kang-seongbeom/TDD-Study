@@ -1,9 +1,9 @@
 package com.example.tddstudy.crud.user.unit;
 
 
-import com.example.tddstudy.crud.domain.User;
-import com.example.tddstudy.crud.repository.UserRepository;
-import com.example.tddstudy.crud.service.UserService;
+import com.example.tddstudy.crud.domain.Member;
+import com.example.tddstudy.crud.repository.MemberRepository;
+import com.example.tddstudy.crud.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class MemberServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
 
     // @Mock 붙은 repository를 service에 주십이시기 위한 애노테이션
     @InjectMocks
-    private UserService userService;
+    private MemberService memberService;
 
     @Test
     @DisplayName("회원 가입")
@@ -34,20 +34,20 @@ public class UserServiceTest {
         String name = "ksb";
         String password = "1234";
 
-        User request = User.builder()
+        Member request = Member.builder()
                 .name(name)
                 .password(password)
                 .build();
 
-        User response = User.builder()
+        Member response = Member.builder()
                 .id(id)
                 .name(name)
                 .password(password)
                 .build();
 
-        given(userRepository.save(request)).willReturn(response);
+        given(memberRepository.save(request)).willReturn(response);
 
-        User result = userService.save(request);
+        Member result = memberService.save(request);
         assertEquals(result.getId(), id);
         assertEquals(result.getName(), name);
         assertEquals(result.getPassword(), password);
@@ -60,22 +60,22 @@ public class UserServiceTest {
         String name = "ksb";
         String password = "1234";
 
-        User request = User.builder()
+        Member request = Member.builder()
                 .name(name)
                 .password(password)
                 .build();
 
-        User response = User.builder()
+        Member response = Member.builder()
                 .id(id)
                 .name(name)
                 .password(password)
                 .build();
 
-        given(userRepository.save(request)).willReturn(response);
-        given(userRepository.findByName(name)).willReturn(Optional.of(response));
+        given(memberRepository.save(request)).willReturn(response);
+        given(memberRepository.findByName(name)).willReturn(Optional.of(response));
 
-        userService.save(request);
-        User result = userService.findByName(name);
+        memberService.save(request);
+        Member result = memberService.findByName(name);
 
         assertEquals(result.getId(), response.getId());
         assertEquals(result.getName(), response.getName());
@@ -89,22 +89,22 @@ public class UserServiceTest {
         String name = "ksb";
         String password = "1234";
 
-        User request = User.builder()
+        Member request = Member.builder()
                 .name(name)
                 .password(password)
                 .build();
 
-        User response = User.builder()
+        Member response = Member.builder()
                 .id(id)
                 .name(name)
                 .password(password)
                 .build();
 
-        given(userRepository.save(request)).willReturn(response);
-        given(userRepository.findByName(name)).willReturn(Optional.of(response));
+        given(memberRepository.save(request)).willReturn(response);
+        given(memberRepository.findByName(name)).willReturn(Optional.of(response));
 
-        userService.save(request);
-        boolean isLogin = userService.login(request);
+        memberService.save(request);
+        boolean isLogin = memberService.login(request);
 
         assertTrue(isLogin);
     }
@@ -117,25 +117,25 @@ public class UserServiceTest {
         String password = "1234";
         String updatedName = "kkk";
 
-        User request = User.builder()
+        Member request = Member.builder()
                 .name(name)
                 .password(password)
                 .build();
 
-        User response = User.builder()
+        Member response = Member.builder()
                 .id(id)
                 .name(name)
                 .password(password)
                 .build();
 
-        given(userRepository.save(request)).willReturn(response);
-        given(userRepository.findByName(name)).willReturn(Optional.of(response));
+        given(memberRepository.save(request)).willReturn(response);
+        given(memberRepository.findByName(name)).willReturn(Optional.of(response));
 
-        userService.save(request);
-        User updateUser = userService.updateUser(request, updatedName);
+        memberService.save(request);
+        Member updateMember = memberService.updateUser(request, updatedName);
 
-        assertEquals(updatedName, updateUser.getName());
-        assertEquals(password, updateUser.getPassword());
+        assertEquals(updatedName, updateMember.getName());
+        assertEquals(password, updateMember.getPassword());
     }
 
     @Test
@@ -145,22 +145,22 @@ public class UserServiceTest {
         String name = "ksb";
         String password = "1234";
 
-        User request = User.builder()
+        Member request = Member.builder()
                 .name(name)
                 .password(password)
                 .build();
 
-        User response = User.builder()
+        Member response = Member.builder()
                 .id(id)
                 .name(name)
                 .password(password)
                 .build();
 
-        given(userRepository.save(request)).willReturn(response);
-        given(userRepository.findByName(name)).willReturn(Optional.of(response));
+        given(memberRepository.save(request)).willReturn(response);
+        given(memberRepository.findByName(name)).willReturn(Optional.of(response));
 
-        userService.save(request);
-        boolean isDelete = userService.delete(request);
+        memberService.save(request);
+        boolean isDelete = memberService.delete(request);
 
         assertTrue(isDelete);
     }

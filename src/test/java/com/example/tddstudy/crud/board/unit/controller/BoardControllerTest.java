@@ -2,9 +2,8 @@ package com.example.tddstudy.crud.board.unit.controller;
 
 import com.example.tddstudy.crud.controller.BoardController;
 import com.example.tddstudy.crud.domain.Board;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.service.BoardService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시글 쓰기")
     public void saveBoard() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -47,7 +46,7 @@ public class BoardControllerTest {
                 .build();
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("board", board.toJson());
 
         RequestBuilder request = MockMvcRequestBuilders
@@ -55,12 +54,12 @@ public class BoardControllerTest {
                 .params(valueMap)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        board.setUser(user);
-        given(boardService.save(any(User.class), any(Board.class))).willReturn(board);
+        board.setMember(member);
+        given(boardService.save(any(Member.class), any(Board.class))).willReturn(board);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.id").value(user.getId()))
+                .andExpect(jsonPath("$.user.id").value(member.getId()))
                 .andExpect(jsonPath("$.title").value(board.getTitle()))
                 .andExpect((jsonPath("$.content").value(board.getContent())));
     }
@@ -92,14 +91,14 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시글 제목 수정")
     public void updateTitle() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
                 .id(11L)
-                .user(user)
+                .member(member)
                 .title("ksb board")
                 .content("ksb content")
                 .build();
@@ -107,7 +106,7 @@ public class BoardControllerTest {
         String update = "kkk board";
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("update", update);
 
@@ -117,7 +116,7 @@ public class BoardControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         board.setTitle(update);
-        given(boardService.updateTitle(any(User.class), any(Board.class), any(String.class))).willReturn(board);
+        given(boardService.updateTitle(any(Member.class), any(Board.class), any(String.class))).willReturn(board);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -127,14 +126,14 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시글 내용 수정")
     public void updateContent() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
                 .id(11L)
-                .user(user)
+                .member(member)
                 .title("ksb board")
                 .content("ksb content")
                 .build();
@@ -142,7 +141,7 @@ public class BoardControllerTest {
         String update = "kkk board";
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("update", update);
 
@@ -153,7 +152,7 @@ public class BoardControllerTest {
 
         given(boardService.findByTitle(update)).willReturn(board);
         board.setContent(update);
-        given(boardService.updateContent(any(User.class), any(Board.class), any(String.class))).willReturn(board);
+        given(boardService.updateContent(any(Member.class), any(Board.class), any(String.class))).willReturn(board);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -163,20 +162,20 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시글 삭제")
     public void delete() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
                 .id(11L)
-                .user(user)
+                .member(member)
                 .title("ksb board")
                 .content("ksb content")
                 .build();
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("board", board.toJson());
 
         RequestBuilder request = MockMvcRequestBuilders
@@ -184,7 +183,7 @@ public class BoardControllerTest {
                 .params(valueMap)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        given(boardService.delete(any(User.class), any(Board.class))).willReturn(true);
+        given(boardService.delete(any(Member.class), any(Board.class))).willReturn(true);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())

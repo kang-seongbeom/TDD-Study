@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,8 +28,8 @@ public class Board {
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({"board"}) // 무한참조 방지
@@ -40,7 +39,7 @@ public class Board {
     public Board copyOf(){
         return Board.builder()
                 .id(id)
-                .user(user)
+                .member(member)
                 .title(title)
                 .content(content)
                 .replies(replies)
@@ -48,6 +47,6 @@ public class Board {
     }
 
     public String toJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(Board.builder().user(user).title(title).content(content).build());
+        return new ObjectMapper().writeValueAsString(Board.builder().member(member).title(title).content(content).build());
     }
 }

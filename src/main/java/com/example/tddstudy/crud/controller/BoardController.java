@@ -2,7 +2,7 @@ package com.example.tddstudy.crud.controller;
 
 import com.example.tddstudy.crud.controller.dto.BoardRequest;
 import com.example.tddstudy.crud.domain.Board;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.service.BoardService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,10 +24,10 @@ public class BoardController {
     public ResponseEntity<Board> save(@RequestParam Map<String, String> params) throws JsonProcessingException {
         BoardRequest boardWriteRequest = new ObjectMapper().convertValue(params, BoardRequest.class);
 
-        User user = boardWriteRequest.userJsonToUser();
+        Member member = boardWriteRequest.memberJsonToUser();
         Board board = boardWriteRequest.boardJsonToBoard();
 
-        Board saved = boardService.save(user, board);
+        Board saved = boardService.save(member, board);
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(saved);
     }
@@ -43,10 +43,10 @@ public class BoardController {
     public ResponseEntity<Board> updateTitle(@RequestParam Map<String, String> params) throws JsonProcessingException {
         BoardRequest boardWriteRequest = new ObjectMapper().convertValue(params, BoardRequest.class);
 
-        User user = boardWriteRequest.userJsonToUser();
+        Member member = boardWriteRequest.memberJsonToUser();
         Board board = boardWriteRequest.boardJsonToBoard();
 
-        Board saved = boardService.updateTitle(user, board, params.get("update"));
+        Board saved = boardService.updateTitle(member, board, params.get("update"));
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(saved);
     }
@@ -55,10 +55,10 @@ public class BoardController {
     public ResponseEntity<Board> updateContent(@RequestParam Map<String, String> params) throws JsonProcessingException {
         BoardRequest boardWriteRequest = new ObjectMapper().convertValue(params, BoardRequest.class);
 
-        User user = boardWriteRequest.userJsonToUser();
+        Member member = boardWriteRequest.memberJsonToUser();
         Board board = boardWriteRequest.boardJsonToBoard();
 
-        Board saved = boardService.updateContent(user, board, params.get("update"));
+        Board saved = boardService.updateContent(member, board, params.get("update"));
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(saved);
     }
@@ -67,10 +67,10 @@ public class BoardController {
     private ResponseEntity<String> delete(@RequestParam Map<String, String> params) throws JsonProcessingException {
         BoardRequest boardWriteRequest = new ObjectMapper().convertValue(params, BoardRequest.class);
 
-        User user = boardWriteRequest.userJsonToUser();
+        Member member = boardWriteRequest.memberJsonToUser();
         Board board = boardWriteRequest.boardJsonToBoard();
 
-        boolean isDelete = boardService.delete(user, board);
+        boolean isDelete = boardService.delete(member, board);
         String response = "{isDelete:"+isDelete+"}";
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
     }

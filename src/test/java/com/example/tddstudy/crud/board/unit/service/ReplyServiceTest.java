@@ -2,7 +2,7 @@ package com.example.tddstudy.crud.board.unit.service;
 
 import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.repository.BoardRepository;
 import com.example.tddstudy.crud.repository.ReplyRepository;
 import com.example.tddstudy.crud.service.ReplyService;
@@ -35,7 +35,7 @@ public class ReplyServiceTest {
     @Test
     @DisplayName("댓글 쓰기")
     public void writeReply(){
-        User replyUser = User.builder()
+        Member replyMember = Member.builder()
                 .id(123L)
                 .name("ksb")
                 .password("1234")
@@ -51,17 +51,17 @@ public class ReplyServiceTest {
                 .build();
 
         given(boardRepository.findById(board.getId())).willReturn(Optional.of(board));
-        Reply result = replyservice.save(replyUser, board, reply);
+        Reply result = replyservice.save(replyMember, board, reply);
 
         assertEquals(result.getBoard().getId(), board.getId());
-        assertEquals(result.getUser().getId(), replyUser.getId());
+        assertEquals(result.getMember().getId(), replyMember.getId());
         assertEquals(result.getBoard().getReplies().get(0).getId(), reply.getId());
     }
 
     @Test
     @DisplayName("자신의 댓글들 보기")
     public void viewReplies(){
-        User replyUser = User.builder()
+        Member replyMember = Member.builder()
                 .id(123L)
                 .name("ksb")
                 .password("1234")
@@ -73,13 +73,13 @@ public class ReplyServiceTest {
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)
-                .user(replyUser)
+                .member(replyMember)
                 .board(board)
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
                 .id(2L)
-                .user(replyUser)
+                .member(replyMember)
                 .board(board)
                 .content("ksb reply2")
                 .build();
@@ -87,12 +87,12 @@ public class ReplyServiceTest {
         List<Reply> replies = List.of(reply1, reply2);
         board.setReplies(replies);
 
-        given(replyRepository.findByUserId(replyUser.getId())).willReturn(replies);
-        List<Reply> userReplies = replyservice.findByUserId(replyUser);
+        given(replyRepository.findByMemberId(replyMember.getId())).willReturn(replies);
+        List<Reply> userReplies = replyservice.findByUserId(replyMember);
 
         for (int i = 0; i < userReplies.size(); i++) {
             assertEquals(userReplies.get(i).getId(), replies.get(i).getId());
-            assertEquals(userReplies.get(i).getUser(), replies.get(i).getUser());
+            assertEquals(userReplies.get(i).getMember(), replies.get(i).getMember());
             assertEquals(userReplies.get(i).getContent(), replies.get(i).getContent());
         }
     }
@@ -100,7 +100,7 @@ public class ReplyServiceTest {
     @Test
     @DisplayName("자신의 댓글 수정")
     public void updateReply(){
-        User replyUser = User.builder()
+        Member replyMember = Member.builder()
                 .id(123L)
                 .name("ksb")
                 .password("1234")
@@ -112,7 +112,7 @@ public class ReplyServiceTest {
                 .build();
         Reply reply = Reply.builder()
                 .id(1L)
-                .user(replyUser)
+                .member(replyMember)
                 .board(board)
                 .content("ksb reply")
                 .build();
@@ -122,7 +122,7 @@ public class ReplyServiceTest {
         board.setReplies(replies);
 
         given(replyRepository.findById(reply.getId())).willReturn(Optional.of(reply));
-        boolean isUpdated = replyservice.updateReplyContent(replyUser, reply, updateContent);
+        boolean isUpdated = replyservice.updateReplyContent(replyMember, reply, updateContent);
 
         assertTrue(isUpdated);
         assertEquals(reply.getContent(), updateContent);
@@ -131,7 +131,7 @@ public class ReplyServiceTest {
     @Test
     @DisplayName("댓글 삭제")
     public void deleteReply(){
-        User replyUser = User.builder()
+        Member replyMember = Member.builder()
                 .id(123L)
                 .name("ksb")
                 .password("1234")
@@ -143,7 +143,7 @@ public class ReplyServiceTest {
                 .build();
         Reply reply = Reply.builder()
                 .id(1L)
-                .user(replyUser)
+                .member(replyMember)
                 .board(board)
                 .content("ksb reply")
                 .build();
@@ -153,7 +153,7 @@ public class ReplyServiceTest {
         board.setReplies(replies);
 
         given(boardRepository.findById(board.getId())).willReturn(Optional.of(board));
-        replyservice.delete(replyUser, board, reply);
+        replyservice.delete(replyMember, board, reply);
 
         assertEquals(0, board.getReplies().size());
     }
@@ -161,7 +161,7 @@ public class ReplyServiceTest {
     @Test
     @DisplayName("게시글 삭제시 댓글 같이 삭제")
     public void deleteBoardWithReplies(){
-        User replyUser = User.builder()
+        Member replyMember = Member.builder()
                 .id(123L)
                 .name("ksb")
                 .password("1234")
@@ -173,13 +173,13 @@ public class ReplyServiceTest {
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)
-                .user(replyUser)
+                .member(replyMember)
                 .board(board)
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
                 .id(2L)
-                .user(replyUser)
+                .member(replyMember)
                 .board(board)
                 .content("ksb reply2")
                 .build();

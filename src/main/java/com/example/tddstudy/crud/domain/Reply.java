@@ -21,8 +21,8 @@ public class Reply {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "boardId")
@@ -34,13 +34,13 @@ public class Reply {
     public Reply copyOf(){
         return Reply.builder()
                 .id(id)
-                .user(user)
+                .member(member)
                 .board(board)
                 .content(content)
                 .build();
     }
 
     public String toJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(Reply.builder().id(id).user(user).board(board).content(content).build());
+        return new ObjectMapper().writeValueAsString(Reply.builder().id(id).member(member).board(board).content(content).build());
     }
 }

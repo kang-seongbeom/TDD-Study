@@ -3,7 +3,7 @@ package com.example.tddstudy.crud.user.integration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class UserTest {
+public class MemberTest {
 
     @Test
     @DisplayName("회원 가입 테스트")

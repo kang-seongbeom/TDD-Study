@@ -1,8 +1,8 @@
 package com.example.tddstudy.crud.user.unit;
 
-import com.example.tddstudy.crud.controller.UserController;
-import com.example.tddstudy.crud.domain.User;
-import com.example.tddstudy.crud.service.UserService;
+import com.example.tddstudy.crud.controller.MemberController;
+import com.example.tddstudy.crud.domain.Member;
+import com.example.tddstudy.crud.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
-public class UserControllerTest {
+@WebMvcTest(MemberController.class)
+public class MemberControllerTest {
 
     private static final String prefix = "/api/v1/user";
 
     @MockBean
-    private UserService userService;
+    private MemberService memberService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,16 +37,16 @@ public class UserControllerTest {
         String name = "ksb";
         String password = "1234";
 
-        User user = User.builder().id(id).name(name).password(password).build();
+        Member member = Member.builder().id(id).name(name).password(password).build();
 
-        given(userService.save(any(User.class))).willReturn(user);
+        given(memberService.save(any(Member.class))).willReturn(member);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .post(prefix + "/signup")
-                .content(user.toJson())
+                .content(member.toJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
-        requestController(request, user);
+        requestController(request, member);
     }
 
     @Test
@@ -56,15 +56,15 @@ public class UserControllerTest {
         String name = "ksb";
         String password = "1234";
 
-        User user = User.builder().id(id).name(name).password(password).build();
+        Member member = Member.builder().id(id).name(name).password(password).build();
 
-        given(userService.findByName(name)).willReturn(user);
+        given(memberService.findByName(name)).willReturn(member);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(prefix +"/findbyname" + "?name=" + name)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        requestController(request, user);
+        requestController(request, member);
     }
 
     @Test
@@ -74,13 +74,13 @@ public class UserControllerTest {
         String name = "ksb";
         String password = "1234";
 
-        User user = User.builder().id(id).name(name).password(password).build();
+        Member member = Member.builder().id(id).name(name).password(password).build();
 
-        given(userService.login(any(User.class))).willReturn(true);
+        given(memberService.login(any(Member.class))).willReturn(true);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .post(prefix +"/login")
-                .content(user.toJson())
+                .content(member.toJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(request)
@@ -96,23 +96,23 @@ public class UserControllerTest {
         String password = "1234";
         String updateName = "kkk";
 
-        User user = User.builder().id(id).name(name).password(password).build();
-        User updateUser = user.copyOf();
-        updateUser.setName(updateName);
+        Member member = Member.builder().id(id).name(name).password(password).build();
+        Member updateMember = member.copyOf();
+        updateMember.setName(updateName);
 
-        given(userService.updateUser(any(User.class), any(String.class))).willReturn(updateUser);
+        given(memberService.updateUser(any(Member.class), any(String.class))).willReturn(updateMember);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("name", updateUser.getName());
-        valueMap.add("password", updateUser.getPassword());
-        valueMap.add("updateName", updateUser.getName());
+        valueMap.add("name", updateMember.getName());
+        valueMap.add("password", updateMember.getPassword());
+        valueMap.add("updateName", updateMember.getName());
 
         RequestBuilder request = MockMvcRequestBuilders
                 .put(prefix +"/updatename")
                 .params(valueMap)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        requestController(request, updateUser);
+        requestController(request, updateMember);
     }
 
     @Test
@@ -122,13 +122,13 @@ public class UserControllerTest {
         String name = "ksb";
         String password = "1234";
 
-        User user = User.builder().id(id).name(name).password(password).build();
+        Member member = Member.builder().id(id).name(name).password(password).build();
 
-        given(userService.delete(any(User.class))).willReturn(true);
+        given(memberService.delete(any(Member.class))).willReturn(true);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .delete(prefix +"/delete")
-                .content(user.toJson())
+                .content(member.toJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(request)
@@ -137,11 +137,11 @@ public class UserControllerTest {
 
     }
 
-    private void requestController(RequestBuilder request, User user) throws Exception {
+    private void requestController(RequestBuilder request, Member member) throws Exception {
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(user.getId()))
-                .andExpect(jsonPath("$.name").value(user.getName()))
-                .andExpect(jsonPath("$.password").value(user.getPassword()));
+                .andExpect(jsonPath("$.id").value(member.getId()))
+                .andExpect(jsonPath("$.name").value(member.getName()))
+                .andExpect(jsonPath("$.password").value(member.getPassword()));
     }
 }

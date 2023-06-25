@@ -3,7 +3,7 @@ package com.example.tddstudy.crud.board.unit.controller;
 import com.example.tddstudy.crud.controller.ReplyController;
 import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.service.BoardService;
 import com.example.tddstudy.crud.service.ReplyService;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +43,7 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("댓글 쓰기")
     public void saveReply() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -53,7 +52,7 @@ public class ReplyControllerTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply = Reply.builder()
                 .id(1L)
@@ -61,7 +60,7 @@ public class ReplyControllerTest {
                 .build();
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("reply", reply.toJson());
 
@@ -69,10 +68,10 @@ public class ReplyControllerTest {
         board.setReplies(List.of(reply));
 
         Reply copiedReply = reply.copyOf();
-        copiedReply.setUser(user);
+        copiedReply.setMember(member);
         copiedReply.setBoard(copiedBoard);
 
-        given(replyService.save(any(User.class), any(Board.class), any(Reply.class))).willReturn(copiedReply);
+        given(replyService.save(any(Member.class), any(Board.class), any(Reply.class))).willReturn(copiedReply);
         given(boardService.findByTitle(board.getTitle())).willReturn(copiedBoard);
 
         RequestBuilder request = MockMvcRequestBuilders
@@ -84,7 +83,7 @@ public class ReplyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(reply.getId()))
                 .andExpect(jsonPath("$.board.id").value(board.getId()))
-                .andExpect(jsonPath("$.user.id").value(user.getId()));
+                .andExpect(jsonPath("$.user.id").value(member.getId()));
 
         assertEquals(boardService.findByTitle(board.getTitle()).getId(), copiedBoard.getId());
     }
@@ -92,7 +91,7 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("자신의 댓글들 보기")
     public void viewReplies() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -101,16 +100,16 @@ public class ReplyControllerTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)
-                .user(user)
+                .member(member)
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
                 .id(1L)
-                .user(user)
+                .member(member)
                 .content("ksb reply2")
                 .build();
 
@@ -118,9 +117,9 @@ public class ReplyControllerTest {
         board.setReplies(replies);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
 
-        given(replyService.findByUserId(any(User.class))).willReturn(replies);
+        given(replyService.findByUserId(any(Member.class))).willReturn(replies);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(prefix + "/findbyuserid")
@@ -136,7 +135,7 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("자신의 댓글 수정")
     public void updateReply() throws Exception{
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -145,11 +144,11 @@ public class ReplyControllerTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply = Reply.builder()
                 .id(1L)
-                .user(user)
+                .member(member)
                 .content("ksb reply")
                 .build();
         String updateContent = "kkk reply";
@@ -158,11 +157,11 @@ public class ReplyControllerTest {
         board.setReplies(replies);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("reply", reply.toJson());
         valueMap.add("update", updateContent);
 
-        given(replyService.updateReplyContent(any(User.class), any(Reply.class), any(String.class))).willReturn(true);
+        given(replyService.updateReplyContent(any(Member.class), any(Reply.class), any(String.class))).willReturn(true);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .put(prefix + "/update")
@@ -177,7 +176,7 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("댓글 삭제")
     public void deleteReply() throws Exception {
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -186,22 +185,22 @@ public class ReplyControllerTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply = Reply.builder()
                 .id(1L)
-                .user(user)
+                .member(member)
                 .content("ksb reply")
                 .build();
         board.setReplies(new ArrayList<>());
         board.getReplies().add(reply);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", user.toJson());
+        valueMap.add("user", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("reply", reply.toJson());
 
-        given(replyService.delete(any(User.class), any(Board.class), any(Reply.class))).willReturn(true);
+        given(replyService.delete(any(Member.class), any(Board.class), any(Reply.class))).willReturn(true);
 
         RequestBuilder request = MockMvcRequestBuilders
                 .delete(prefix + "/delete")

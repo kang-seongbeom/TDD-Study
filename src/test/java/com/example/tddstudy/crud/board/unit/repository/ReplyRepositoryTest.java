@@ -2,7 +2,7 @@ package com.example.tddstudy.crud.board.unit.repository;
 
 import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.repository.BoardRepository;
 import com.example.tddstudy.crud.repository.ReplyRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ public class ReplyRepositoryTest {
     @Test
     @DisplayName("댓글 쓰기")
     public void writeReply(){
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -38,7 +38,7 @@ public class ReplyRepositoryTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)
@@ -60,15 +60,15 @@ public class ReplyRepositoryTest {
         Board savedBoard1 = replyRepository.save(reply1).getBoard();
         Board savedBoard2 = replyRepository.save(reply2).getBoard();
 
-        assertEquals("ksb", savedBoard1.getUser().getName());
-        assertEquals("1234", savedBoard1.getUser().getPassword());
+        assertEquals("ksb", savedBoard1.getMember().getName());
+        assertEquals("1234", savedBoard1.getMember().getPassword());
         assertEquals("ksb title", savedBoard1.getTitle());
         assertEquals("ksb contents", savedBoard1.getContent());
         assertEquals("ksb reply1", savedBoard1.getReplies().get(0).getContent());
         assertEquals("ksb reply2", savedBoard1.getReplies().get(1).getContent());
 
-        assertEquals("ksb", savedBoard2.getUser().getName());
-        assertEquals("1234", savedBoard2.getUser().getPassword());
+        assertEquals("ksb", savedBoard2.getMember().getName());
+        assertEquals("1234", savedBoard2.getMember().getPassword());
         assertEquals("ksb title", savedBoard2.getTitle());
         assertEquals("ksb contents", savedBoard2.getContent());
         assertEquals("ksb reply1", savedBoard2.getReplies().get(0).getContent());
@@ -78,7 +78,7 @@ public class ReplyRepositoryTest {
     @Test
     @DisplayName("자신의 댓글들 보기")
     public void viewReplies(){
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -87,13 +87,13 @@ public class ReplyRepositoryTest {
                 .id(1L)
                 .title("ksb title1")
                 .content("ksb contents1")
-                .user(user)
+                .member(member)
                 .build();
         Board board2 = Board.builder()
                 .id(2L)
                 .title("ksb title2")
                 .content("ksb contents2")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)
@@ -115,9 +115,9 @@ public class ReplyRepositoryTest {
         board2.setReplies(List.of(reply3));
 
         List<Board> userBoards = List.of(board1, board2);
-        given(boardRepository.findByUserId(user.getId())).willReturn(userBoards);
+        given(boardRepository.findByMemberId(member.getId())).willReturn(userBoards);
 
-        List<Board> findUserBoards = boardRepository.findByUserId(user.getId());
+        List<Board> findUserBoards = boardRepository.findByMemberId(member.getId());
 
         assertEquals(findUserBoards.get(0).getReplies().get(0), reply1);
         assertEquals(findUserBoards.get(0).getReplies().get(1), reply2);
@@ -127,7 +127,7 @@ public class ReplyRepositoryTest {
     @Test
     @DisplayName("자신의 댓글 수정")
     public void updateReply(){
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -136,7 +136,7 @@ public class ReplyRepositoryTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)
@@ -147,20 +147,20 @@ public class ReplyRepositoryTest {
         board.setReplies(List.of(reply1));
         List<Board> userBoards = List.of(board);
 
-        given(boardRepository.findByUserId(user.getId())).willReturn(userBoards);
+        given(boardRepository.findByMemberId(member.getId())).willReturn(userBoards);
 
-        boardRepository.findByUserId(user.getId()).get(0).getReplies().get(0).setContent("kkk reply");
+        boardRepository.findByMemberId(member.getId()).get(0).getReplies().get(0).setContent("kkk reply");
         replyRepository.save(userBoards.get(0).getReplies().get(0));
 
-        given(boardRepository.findByUserId(user.getId())).willReturn(userBoards);
+        given(boardRepository.findByMemberId(member.getId())).willReturn(userBoards);
 
-        assertEquals("kkk reply", boardRepository.findByUserId(user.getId()).get(0).getReplies().get(0).getContent());
+        assertEquals("kkk reply", boardRepository.findByMemberId(member.getId()).get(0).getReplies().get(0).getContent());
     }
 
     @Test
     @DisplayName("댓글 삭제")
     public void deleteReply(){
-        User user = User.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .name("ksb")
                 .password("1234")
@@ -169,7 +169,7 @@ public class ReplyRepositoryTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
-                .user(user)
+                .member(member)
                 .build();
         Reply reply1 = Reply.builder()
                 .id(1L)

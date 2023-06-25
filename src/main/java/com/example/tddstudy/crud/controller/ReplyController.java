@@ -3,7 +3,7 @@ package com.example.tddstudy.crud.controller;
 import com.example.tddstudy.crud.controller.dto.ReplyRequest;
 import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
-import com.example.tddstudy.crud.domain.User;
+import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.service.ReplyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,11 +26,11 @@ public class ReplyController {
     public ResponseEntity<Reply> save(@RequestParam Map<String, String> params) throws JsonProcessingException {
         ReplyRequest replyRequest = new ObjectMapper().convertValue(params, ReplyRequest.class);
 
-        User user = replyRequest.userJsonToUser();
+        Member member = replyRequest.memberJsonToUser();
         Board board = replyRequest.boardJsonToBoard();
         Reply reply = replyRequest.replyJsonToReply();
 
-        Reply saved = replyService.save(user, board, reply);
+        Reply saved = replyService.save(member, board, reply);
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(saved);
     }
@@ -39,9 +39,9 @@ public class ReplyController {
     public ResponseEntity<List<Reply>> findByUserId(@RequestParam Map<String, String> params) throws JsonProcessingException {
         ReplyRequest replyRequest = new ObjectMapper().convertValue(params, ReplyRequest.class);
 
-        User user = replyRequest.userJsonToUser();
+        Member member = replyRequest.memberJsonToUser();
 
-        List<Reply> saved = replyService.findByUserId(user);
+        List<Reply> saved = replyService.findByUserId(member);
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(saved);
     }
@@ -50,11 +50,11 @@ public class ReplyController {
     public ResponseEntity<String> update(@RequestParam Map<String, String> params) throws JsonProcessingException {
         ReplyRequest replyRequest = new ObjectMapper().convertValue(params, ReplyRequest.class);
 
-        User user = replyRequest.userJsonToUser();
+        Member member = replyRequest.memberJsonToUser();
         Reply reply = replyRequest.replyJsonToReply();
         String update = replyRequest.getUpdate();
 
-        boolean isUpdate = replyService.updateReplyContent(user, reply, update);
+        boolean isUpdate = replyService.updateReplyContent(member, reply, update);
 
         String response = "{isUpdate:"+isUpdate+"}";
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
@@ -64,11 +64,11 @@ public class ReplyController {
     public ResponseEntity<String> delete(@RequestParam Map<String, String> params) throws JsonProcessingException {
         ReplyRequest replyRequest = new ObjectMapper().convertValue(params, ReplyRequest.class);
 
-        User user = replyRequest.userJsonToUser();
+        Member member = replyRequest.memberJsonToUser();
         Board board = replyRequest.boardJsonToBoard();
         Reply reply = replyRequest.replyJsonToReply();
 
-        boolean isDelete = replyService.delete(user, board, reply);
+        boolean isDelete = replyService.delete(member, board, reply);
 
         String response = "{isDelete:"+isDelete+"}";
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);

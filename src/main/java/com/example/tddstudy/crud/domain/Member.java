@@ -5,19 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
-@Entity
+@Entity(name = "Member")
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Column(name = "memberId")
     private Long id;
 
     @Column
@@ -26,14 +25,14 @@ public class User {
     @Column
     private String password;
 
-    public User copyOf(){
-        return User.builder()
+    public Member copyOf(){
+        return Member.builder()
                 .name(this.name)
                 .password(this.password)
                 .build();
     }
 
     public String toJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(User.builder().id(id).name(name).password(password).build());
+        return new ObjectMapper().writeValueAsString(Member.builder().id(id).name(name).password(password).build());
     }
 }
