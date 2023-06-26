@@ -4,19 +4,23 @@ import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.repository.BoardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@DataJpaTest
+@TestPropertySource(locations = "classpath:test-application.yml")
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class BoardRepositoryTest {
 
-    @Mock
+    @Autowired
     private BoardRepository boardRepository;
 
     @Test
@@ -31,8 +35,6 @@ public class BoardRepositoryTest {
                 .title(title)
                 .content(content)
                 .build();
-
-        given(boardRepository.save(board)).willReturn(board);
 
         Board write = boardRepository.save(board);
 
@@ -54,10 +56,8 @@ public class BoardRepositoryTest {
                 .content(content)
                 .build();
 
-        given(boardRepository.save(board)).willReturn(board);
         boardRepository.save(board);
 
-        given(boardRepository.findByTitle(title)).willReturn(Optional.of(board));
         Board find = boardRepository.findByTitle(title).get();
 
         assertEquals(board.getId(), find.getId());
@@ -82,10 +82,6 @@ public class BoardRepositoryTest {
 
         Board update = board.copyOf();
 
-        given(boardRepository.save(board)).willReturn(board);
-        given(boardRepository.save(update)).willReturn(update);
-        given(boardRepository.findById(update.getId())).willReturn(Optional.of(update));
-
         boardRepository.save(board);
         boardRepository.save(update);
 
@@ -99,6 +95,7 @@ public class BoardRepositoryTest {
         assertEquals(board.getId(), update.getId());
         assertEquals(updateTitle, update.getTitle());
         assertEquals(updateContent, update.getContent());
+        assertNotEquals(board.getContent(), update.getContent());
     }
 
     @Test
@@ -114,14 +111,11 @@ public class BoardRepositoryTest {
                 .content(content)
                 .build();
 
-        given(boardRepository.save(board)).willReturn(board);
         boardRepository.save(board);
 
         boardRepository.deleteById(board.getId());
-        given(boardRepository.findById(id)).willReturn(null);
-        given(boardRepository.findByTitle(title)).willReturn(null);
 
-        assertNull(boardRepository.findById(id));
-        assertNull(boardRepository.findByTitle(title));
+        assertEquals(boardRepository.findById(id), Optional.empty());
+        assertEquals(boardRepository.findByTitle(title), Optional.empty());
     }
 }

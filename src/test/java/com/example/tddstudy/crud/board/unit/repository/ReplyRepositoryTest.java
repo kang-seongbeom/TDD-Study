@@ -4,26 +4,37 @@ import com.example.tddstudy.crud.domain.Board;
 import com.example.tddstudy.crud.domain.Reply;
 import com.example.tddstudy.crud.domain.Member;
 import com.example.tddstudy.crud.repository.BoardRepository;
+import com.example.tddstudy.crud.repository.MemberRepository;
 import com.example.tddstudy.crud.repository.ReplyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Primary;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+
+@ActiveProfiles("test")
+@DataJpaTest
+@TestPropertySource(locations = "classpath:test-application.yml")
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class ReplyRepositoryTest {
 
-    @Mock
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private ReplyRepository replyRepository;
 
-    @Mock
+    @Autowired
     private BoardRepository boardRepository;
 
     @Test
@@ -46,19 +57,23 @@ public class ReplyRepositoryTest {
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
-                .id(1L)
+                .id(2L)
                 .board(board)
                 .content("ksb reply2")
                 .build();
 
+        memberRepository.save(member);
+        boardRepository.save(board);
+        replyRepository.save(reply1);
+        replyRepository.save(reply2);
+
         List<Reply> replies = List.of(reply1, reply2);
         board.setReplies(replies);
 
-        given(replyRepository.save(reply1)).willReturn(reply1);
-        given(replyRepository.save(reply2)).willReturn(reply2);
+        boardRepository.save(board);
 
-        Board savedBoard1 = replyRepository.save(reply1).getBoard();
-        Board savedBoard2 = replyRepository.save(reply2).getBoard();
+        Board savedBoard1 = reply1.getBoard();
+        Board savedBoard2 = reply2.getBoard();
 
         assertEquals("ksb", savedBoard1.getMember().getName());
         assertEquals("1234", savedBoard1.getMember().getPassword());
@@ -84,38 +99,44 @@ public class ReplyRepositoryTest {
                 .password("1234")
                 .build();
         Board board1 = Board.builder()
-                .id(1L)
                 .title("ksb title1")
                 .content("ksb contents1")
                 .member(member)
                 .build();
         Board board2 = Board.builder()
-                .id(2L)
                 .title("ksb title2")
                 .content("ksb contents2")
                 .member(member)
                 .build();
         Reply reply1 = Reply.builder()
-                .id(1L)
                 .board(board1)
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
-                .id(1L)
                 .board(board1)
                 .content("ksb reply2")
                 .build();
         Reply reply3 = Reply.builder()
-                .id(1L)
                 .board(board2)
                 .content("ksb reply3")
                 .build();
 
-        board1.setReplies(List.of(reply1, reply2));
-        board2.setReplies(List.of(reply3));
+        memberRepository.save(member);
+        boardRepository.save(board1);
+        boardRepository.save(board2);
+        replyRepository.save(reply1);
+        replyRepository.save(reply2);
+        replyRepository.save(reply3);
 
-        List<Board> userBoards = List.of(board1, board2);
-        given(boardRepository.findByMemberId(member.getId())).willReturn(userBoards);
+        List<Reply> board1Replies = new ArrayList<>();
+        List<Reply> board2Replies = new ArrayList<>();
+        board1Replies.add(reply1);
+        board1Replies.add(reply2);
+        board2Replies.add(reply3);
+        board1.setReplies(board1Replies);
+        board2.setReplies(board2Replies);
+        boardRepository.save(board1);
+        boardRepository.save(board2);
 
         List<Board> findUserBoards = boardRepository.findByMemberId(member.getId());
 
@@ -136,25 +157,26 @@ public class ReplyRepositoryTest {
                 .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
+                .replies(new ArrayList<>())
                 .member(member)
                 .build();
-        Reply reply1 = Reply.builder()
+        Reply reply = Reply.builder()
                 .id(1L)
                 .board(board)
                 .content("ksb reply")
                 .build();
 
-        board.setReplies(List.of(reply1));
-        List<Board> userBoards = List.of(board);
+        memberRepository.save(member);
+        boardRepository.save(board);
+        replyRepository.save(reply);
 
-        given(boardRepository.findByMemberId(member.getId())).willReturn(userBoards);
+        board.getReplies().add(reply);
+        boardRepository.save(board);
 
-        boardRepository.findByMemberId(member.getId()).get(0).getReplies().get(0).setContent("kkk reply");
-        replyRepository.save(userBoards.get(0).getReplies().get(0));
+        reply.setContent("kkk reply");
+        replyRepository.save(reply);
 
-        given(boardRepository.findByMemberId(member.getId())).willReturn(userBoards);
-
-        assertEquals("kkk reply", boardRepository.findByMemberId(member.getId()).get(0).getReplies().get(0).getContent());
+        assertEquals(board.getReplies().get(0).getContent(), "kkk reply");
     }
 
     @Test
@@ -170,22 +192,23 @@ public class ReplyRepositoryTest {
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
+                .replies(new ArrayList<>())
                 .build();
-        Reply reply1 = Reply.builder()
+        Reply reply = Reply.builder()
                 .id(1L)
                 .board(board)
                 .content("ksb reply")
                 .build();
-        board.setReplies(List.of(reply1));
 
-        given(boardRepository.save(board)).willReturn(board);
-        Board saveBoard = boardRepository.save(board);
+        memberRepository.save(member);
+        boardRepository.save(board);
+        replyRepository.save(reply);
 
-        replyRepository.delete(saveBoard.getReplies().get(0));
-        given(boardRepository.save(saveBoard)).willReturn(saveBoard);
-        boardRepository.save(saveBoard);
+        board.getReplies().add(reply);
+        boardRepository.save(board);
 
-        given(replyRepository.findById(reply1.getId())).willReturn(null);
-        assertNull(replyRepository.findById(reply1.getId()));
+        replyRepository.delete(board.getReplies().get(0));
+
+        assertEquals(Optional.empty(), replyRepository.findById(reply.getId()));
     }
 }
