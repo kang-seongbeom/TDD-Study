@@ -44,23 +44,20 @@ public class ReplyControllerTest {
     @DisplayName("댓글 쓰기")
     public void saveReply() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
                 .build();
         Reply reply = Reply.builder()
-                .id(1L)
                 .content("ksb reply")
                 .build();
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("reply", reply.toJson());
 
@@ -83,7 +80,7 @@ public class ReplyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(reply.getId()))
                 .andExpect(jsonPath("$.board.id").value(board.getId()))
-                .andExpect(jsonPath("$.user.id").value(member.getId()));
+                .andExpect(jsonPath("$.member.id").value(member.getId()));
 
         assertEquals(boardService.findByTitle(board.getTitle()).getId(), copiedBoard.getId());
     }
@@ -92,23 +89,19 @@ public class ReplyControllerTest {
     @DisplayName("자신의 댓글들 보기")
     public void viewReplies() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
                 .build();
         Reply reply1 = Reply.builder()
-                .id(1L)
                 .member(member)
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
-                .id(1L)
                 .member(member)
                 .content("ksb reply2")
                 .build();
@@ -117,7 +110,7 @@ public class ReplyControllerTest {
         board.setReplies(replies);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
 
         given(replyService.findByUserId(any(Member.class))).willReturn(replies);
 
@@ -136,18 +129,15 @@ public class ReplyControllerTest {
     @DisplayName("자신의 댓글 수정")
     public void updateReply() throws Exception{
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
                 .build();
         Reply reply = Reply.builder()
-                .id(1L)
                 .member(member)
                 .content("ksb reply")
                 .build();
@@ -157,7 +147,7 @@ public class ReplyControllerTest {
         board.setReplies(replies);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("reply", reply.toJson());
         valueMap.add("update", updateContent);
 
@@ -177,18 +167,15 @@ public class ReplyControllerTest {
     @DisplayName("댓글 삭제")
     public void deleteReply() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
                 .build();
         Reply reply = Reply.builder()
-                .id(1L)
                 .member(member)
                 .content("ksb reply")
                 .build();
@@ -196,7 +183,7 @@ public class ReplyControllerTest {
         board.getReplies().add(reply);
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("reply", reply.toJson());
 

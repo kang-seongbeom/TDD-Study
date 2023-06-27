@@ -9,9 +9,7 @@ import com.example.tddstudy.crud.repository.ReplyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -22,10 +20,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-@ActiveProfiles("test")
 @DataJpaTest
-@TestPropertySource(locations = "classpath:test-application.yml")
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(locations = "classpath:application.yml")
 public class ReplyRepositoryTest {
 
     @Autowired
@@ -41,23 +37,20 @@ public class ReplyRepositoryTest {
     @DisplayName("댓글 쓰기")
     public void writeReply(){
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
+                .replies(new ArrayList<>())
                 .build();
         Reply reply1 = Reply.builder()
-                .id(1L)
                 .board(board)
                 .content("ksb reply1")
                 .build();
         Reply reply2 = Reply.builder()
-                .id(2L)
                 .board(board)
                 .content("ksb reply2")
                 .build();
@@ -67,8 +60,8 @@ public class ReplyRepositoryTest {
         replyRepository.save(reply1);
         replyRepository.save(reply2);
 
-        List<Reply> replies = List.of(reply1, reply2);
-        board.setReplies(replies);
+        board.getReplies().add(reply1);
+        board.getReplies().add(reply2);
 
         boardRepository.save(board);
 
@@ -94,7 +87,6 @@ public class ReplyRepositoryTest {
     @DisplayName("자신의 댓글들 보기")
     public void viewReplies(){
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
@@ -149,19 +141,16 @@ public class ReplyRepositoryTest {
     @DisplayName("자신의 댓글 수정")
     public void updateReply(){
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .replies(new ArrayList<>())
                 .member(member)
                 .build();
         Reply reply = Reply.builder()
-                .id(1L)
                 .board(board)
                 .content("ksb reply")
                 .build();
@@ -183,19 +172,16 @@ public class ReplyRepositoryTest {
     @DisplayName("댓글 삭제")
     public void deleteReply(){
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(1L)
                 .title("ksb title")
                 .content("ksb contents")
                 .member(member)
                 .replies(new ArrayList<>())
                 .build();
         Reply reply = Reply.builder()
-                .id(1L)
                 .board(board)
                 .content("ksb reply")
                 .build();

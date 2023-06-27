@@ -1,11 +1,10 @@
 spring:
   h2:
     console:
-      enabled: false  # H2 Console\uC744 \uC0AC\uC6A9\uD560\uC9C0 \uC5EC\uBD80 (H2 Console\uC740 H2 Database\uB97C UI\uB85C \uC81C\uACF5\uD574\uC8FC\uB294 \uAE30\uB2A5)
-      path: /h2-console  # H2 Console\uC758 Path
-    # Database Setting Info (Database\uB97C H2\uB85C \uC0AC\uC6A9\uD558\uAE30 \uC704\uD574 H2\uC5F0\uACB0 \uC815\uBCF4 \uC785\uB825)
+      enabled: true
+      path: /h2-console
     datasource:
-      driver-class-name: org.h2.Driver  # Database\uB97C H2\uB85C \uC0AC\uC6A9\uD558\uACA0\uB2E4.
-      url: jdbc:h2:~/test  # H2 \uC811\uC18D \uC815\uBCF4
-      username: sa  # H2 \uC811\uC18D \uC2DC \uC785\uB825\uD560 username \uC815\uBCF4 (\uC6D0\uD558\uB294 \uAC83\uC73C\uB85C \uC785\uB825)
-      password:  # H2 \uC811\uC18D \uC2DC \uC785\uB825\uD560 password \uC815\uBCF4 (\uC6D0\uD558\uB294 \uAC83\uC73C\uB85C \uC785\uB825)
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:~/test
+      username: sa
+      password:

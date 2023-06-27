@@ -47,6 +47,6 @@ public class Board {
     }
 
     public String toJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(Board.builder().member(member).title(title).content(content).build());
+        return new ObjectMapper().writeValueAsString(Board.builder().id(id).member(member).title(title).content(content).build());
     }
 }

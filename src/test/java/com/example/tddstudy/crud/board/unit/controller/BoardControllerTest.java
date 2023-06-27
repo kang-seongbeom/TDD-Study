@@ -35,18 +35,16 @@ public class BoardControllerTest {
     @DisplayName("게시글 쓰기")
     public void saveBoard() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(11L)
                 .title("ksb board")
                 .content("ksb content")
                 .build();
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("board", board.toJson());
 
         RequestBuilder request = MockMvcRequestBuilders
@@ -59,7 +57,7 @@ public class BoardControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.id").value(member.getId()))
+                .andExpect(jsonPath("$.member.id").value(member.getId()))
                 .andExpect(jsonPath("$.title").value(board.getTitle()))
                 .andExpect((jsonPath("$.content").value(board.getContent())));
     }
@@ -68,7 +66,6 @@ public class BoardControllerTest {
     @DisplayName("게시글 이름으로 검색")
     public void findByTitle() throws Exception {
         Board board = Board.builder()
-                .id(11L)
                 .title("ksb board")
                 .content("ksb content")
                 .build();
@@ -92,12 +89,10 @@ public class BoardControllerTest {
     @DisplayName("게시글 제목 수정")
     public void updateTitle() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(11L)
                 .member(member)
                 .title("ksb board")
                 .content("ksb content")
@@ -106,7 +101,7 @@ public class BoardControllerTest {
         String update = "kkk board";
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("update", update);
 
@@ -127,12 +122,10 @@ public class BoardControllerTest {
     @DisplayName("게시글 내용 수정")
     public void updateContent() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(11L)
                 .member(member)
                 .title("ksb board")
                 .content("ksb content")
@@ -141,7 +134,7 @@ public class BoardControllerTest {
         String update = "kkk board";
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("board", board.toJson());
         valueMap.add("update", update);
 
@@ -163,19 +156,17 @@ public class BoardControllerTest {
     @DisplayName("게시글 삭제")
     public void delete() throws Exception {
         Member member = Member.builder()
-                .id(1L)
                 .name("ksb")
                 .password("1234")
                 .build();
         Board board = Board.builder()
-                .id(11L)
                 .member(member)
                 .title("ksb board")
                 .content("ksb content")
                 .build();
 
         LinkedMultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.add("user", member.toJson());
+        valueMap.add("member", member.toJson());
         valueMap.add("board", board.toJson());
 
         RequestBuilder request = MockMvcRequestBuilders
